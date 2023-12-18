@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.login"
-        minSdk = 34
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -40,8 +40,13 @@ android {
         }
     }
 
-}
+    android {
+        buildFeatures {
+            dataBinding = true
+        }
 
+    }
+}
 dependencies {
 
     implementation("androidx.core:core-ktx:1.9.0")

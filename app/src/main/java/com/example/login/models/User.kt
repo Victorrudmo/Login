@@ -3,7 +3,7 @@ package com.example.login.models
 import android.os.Parcel
 import android.os.Parcelable
 
-data class User(val id: Int, val name: String, val contrasenna: String) : Parcelable {
+data class User(val id: Int, var name: String, var contrasenna: String) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
         parcel.readString() ?: "",
@@ -21,6 +21,7 @@ data class User(val id: Int, val name: String, val contrasenna: String) : Parcel
     }
 
     companion object CREATOR : Parcelable.Creator<User> {
+
         override fun createFromParcel(parcel: Parcel): User {
             return User(parcel)
         }
@@ -30,5 +31,7 @@ data class User(val id: Int, val name: String, val contrasenna: String) : Parcel
         }
     }
 }
+
+
 
 

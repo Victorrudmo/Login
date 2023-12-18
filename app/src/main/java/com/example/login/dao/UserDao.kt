@@ -3,8 +3,8 @@ package com.example.login.dao
 import com.example.login.interfaces.UserDaoInterface
 import com.example.login.models.User
 
-class UserDao : UserDaoInterface {
-    private val userList = mutableListOf(
+object UserDao : UserDaoInterface {
+    val userList = mutableListOf(
         User(1, "Usuario1", "contrasenna1"),
         User(2, "Usuario2", "contrasenna2")
     )
@@ -16,4 +16,20 @@ class UserDao : UserDaoInterface {
     override fun deleteUser(user: User) {
         userList.remove(user)
     }
+
+    override fun editUser(user: User) {
+        val existingUser = userList.find { it.id == user.id }
+        existingUser?.apply {
+            name = user.name
+            contrasenna = user.contrasenna
+        }
+    }
+
+    override fun addUser(user: User) {
+        userList.add(user)
+    }
 }
+
+
+
+

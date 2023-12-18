@@ -6,7 +6,7 @@ import com.example.login.interfaces.UserDaoInterface
 import com.example.login.models.User
 
 object UserRepository {
-    private val userDao: UserDaoInterface = UserDao()
+    private val userDao: UserDaoInterface = UserDao
     private val userController: UserController = UserController(userDao)
 
     fun getUserController(): UserController {
@@ -14,19 +14,31 @@ object UserRepository {
     }
 
     fun login(username: String, password: String): Boolean {
-        // lista de usuario registrados
-        val registeredUsers = listOf(
-            User(1, "Usuario1", "contrasenna1"),
-            User(2, "Usuario2", "contrasenna2")
-        )
+        val registeredUsers = userDao.getAllUsers()
 
-        // Verificar si las credenciales coinciden con algún usuario registrado
         val user = registeredUsers.find { it.name.equals(username, ignoreCase = true) && it.contrasenna == password }
 
-        // Devolver true si se encuentra el usuario, indicando un inicio de sesión exitoso
         return user != null
     }
 
+    fun register(username: String, password: String): Boolean {
+        val registeredUsers = userDao.getAllUsers()
+
+        if (registeredUsers.any { it.name.equals(username, ignoreCase = true) }) {
+            // El usuario ya esta registrado
+            return false
+        }
+
+        val newUser = User(registeredUsers.size + 1, username, password)
+        userDao.addUser(newUser)
+
+        return true
+    }
 }
+
+
+
+
+
 
 

@@ -2,12 +2,14 @@ package com.example.login
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.login.adapter.UserAdapter
 import com.example.login.controller.UserController
 import com.example.login.dao.UserDao
 import com.example.login.databinding.ActivityUserListBinding
 import com.example.login.models.User
+import com.example.login.objects_models.UserRepository
 
 class UserListActivity : AppCompatActivity() {
 
@@ -20,34 +22,63 @@ class UserListActivity : AppCompatActivity() {
         binding = ActivityUserListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Recibe la lista de usuarios desde el Intent
         userList = (intent.getSerializableExtra("userList") as ArrayList<User>).toMutableList()
 
-        // Configura el RecyclerView con el nuevo diseño y el Adapter
-        userAdapter = UserAdapter(userList) { position ->
-            deleteUser(position)
-        }
+        userAdapter = UserAdapter(userList,
+            onDeleteClick = { position -> deleteUser(position) },
+            onEditClick = { user -> showEditDialog(user) }
+        )
+
 
         binding.myRecyclerView.adapter = userAdapter
         binding.myRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        // Desactivar animaciones de intercambio de elementos
         binding.myRecyclerView.itemAnimator = null
+
+        binding.btnAdd.setOnClickListener {
+            showRegisterDialog()
+        }
     }
 
     private fun deleteUser(position: Int) {
         if (position in 0 until userList.size) {
             val userToDelete = userList[position]
 
-            // Eliminar el usuario de la lista
-            val userController = UserController(UserDao())
+            val userController = UserController(UserDao)
             userController.deleteUser(userToDelete)
 
-            // Actualizar la lista y la vista
             userList.removeAt(position)
             userAdapter.notifyItemRemoved(position)
         }
     }
+
+    private fun showEditDialog(user: User) {
+        val editDialog = EditDialogFragment(user) { editedUser ->
+            val userController = UserController(UserDao)
+            userController.editUser(editedUser)
+
+            val position = userList.indexOfFirst { it.id == editedUser.id }
+            if (position != -1) {
+                userList[position] = editedUser
+                userAdapter.notifyItemChanged(position)
+            }
+        }
+        editDialog.show(supportFragmentManager, "EditDialog")
+    }
+
+    private fun showRegisterDialog() {
+        val dialog = RegisterDialogFragment { username, password ->
+            if (UserRepository.register(username, password)) {
+                // Actualiza la lista y notifica
+                userList.clear()
+                userList.addAll(UserRepository.getUserController().getAllUsers())
+                userAdapter.notifyDataSetChanged()
+
+                Toast.makeText(this, "Usuario registrado exitosamente", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Error al registrar el usuario", Toast.LENGTH_SHORT).show()
+            }
+        }
+        dialog.show(supportFragmentManager, "RegisterDialog")
+    }
+
 }
-
-

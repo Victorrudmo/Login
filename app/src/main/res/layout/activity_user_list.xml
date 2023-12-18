@@ -10,6 +10,7 @@
     app:cardCornerRadius="30dp"
     app:cardElevation="10dp">
 
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -68,6 +69,7 @@
             app:layout_constraintStart_toEndOf="@id/btn_edit"
             app:layout_constraintTop_toBottomOf="@id/txtview_contrasenna" />
 
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -77,4 +79,13 @@
         android:padding="25dp"
         tools:ignore="MissingConstraints" />
 
+    <ImageView
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/add"
+        tools:ignore="MissingConstraints" />
+
 </androidx.cardview.widget.CardView>
+
+

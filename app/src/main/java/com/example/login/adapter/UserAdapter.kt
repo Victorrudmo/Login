@@ -7,15 +7,26 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.login.R
+import com.example.login.dao.UserDao.userList
 import com.example.login.models.User
 
-class UserAdapter(private val userList: List<User>, private val onDeleteClick: (Int) -> Unit) :
-    RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter(
+    private val userList: List<User>,
+    private val onDeleteClick: (Int) -> Unit,
+    private val onEditClick: (User) -> Unit
+) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
-    class UserViewHolder(itemView: View, onDeleteClick: (Int) -> Unit) : RecyclerView.ViewHolder(itemView) {
+    class UserViewHolder(
+        itemView: View,
+        onDeleteClick: (Int) -> Unit,
+        onEditClick: (User) -> Unit
+    ) : RecyclerView.ViewHolder(itemView) {
         init {
             itemView.findViewById<ImageView>(R.id.btn_delete).setOnClickListener {
                 onDeleteClick(adapterPosition)
+            }
+            itemView.findViewById<ImageView>(R.id.btn_edit).setOnClickListener {
+                onEditClick(userList[adapterPosition])
             }
         }
 
@@ -25,22 +36,22 @@ class UserAdapter(private val userList: List<User>, private val onDeleteClick: (
         }
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        // Inflar la vista del elemento de usuario con el nuevo diseño
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.activity_user_list, parent, false)
-        return UserViewHolder(view, onDeleteClick)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.activity_user_list, parent, false)
+        return UserViewHolder(view, onDeleteClick, onEditClick)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        // Llamar al método renderize en el ViewHolder para cargar los datos del usuario
         holder.renderize(userList[position])
     }
 
     override fun getItemCount(): Int {
-        // Devolver el número de elementos en la lista
         return userList.size
     }
 }
+
+
+
 
 
